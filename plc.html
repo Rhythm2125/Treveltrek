@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Destinations</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url("https://images.wallpapersden.com/image/download/forest-mountains_am1sZWyUmZqaraWkpJRnZWltrWZnbmw.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: #000000;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #000000;
+        }
+
+        .place {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #ffffff;
+            color: #000000;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+
+        .place img {
+            width: 80px;
+            height: 80px;
+            border-radius: 5px;
+            margin-right: 15px;
+            object-fit: cover;
+        }
+
+        .place div {
+            font-size: 16px;
+            font-weight: bold;
+            flex-grow: 1;
+        }
+
+        .directions-circle {
+            width: 30px;
+            height: 30px;
+            background-color: #000000;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .directions-circle:hover {
+            transform: scale(1.05);
+        }
+
+        .back-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #000000;
+            color: rgb(255, 255, 255);
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: background-color 0.2s;
+            width: fit-content;
+        }
+
+        .back-button:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Places to Visit</h1>
+        <div id="places-list"></div>
+        <a href="index.html" class="back-button">Back to Home</a>
+    </div>
+
+    <script>
+        const destinations = {
+            agra: [
+            { name: "Taj Mahal - Agra", img: "https://lp-cms-production.imgix.net/2020-11/shutterstockRF_547110784.jpg", map:"https://maps.app.goo.gl/Bz7AJfYVdf9xdzzz6"},
+            { name: "Akbar's Tomb - Agra", img: "https://pohcdn.com/guide/sites/default/files/styles/node__blog_post__bp_banner/public/hero_banner/Tomb_of_Akbar_the_Great.jpg", map:"https://maps.app.goo.gl/zz6V7D8Z9CEN4SC56"},
+            { name: "Fatehpur Sikri - Agra", img: "https://d37rmf1ynyg9aw.cloudfront.net/fit-in/1280x1280/data/v4/resources/images/328fc4ee-b6d6-4882-9e87-d7342b1b15bb.jpg", map:"https://maps.app.goo.gl/LzHDKWecqPZJukDL7"},
+            ],
+            ajmer: [
+                { name: "Dargah Sharif - Ajmer", img: "https://www.rajasthantoursindia.com/wp-content/uploads/2019/06/Ajmer-Sharif-Dargah1.jpg", map: "https://maps.app.goo.gl/rEqyxSJQNhBhQMMx7"},
+                { name: "Ana Sagar Lake - Ajmer", img: "https://live.staticflickr.com/3772/9858528346_c941e8310f_h.jpg", map: "https://maps.app.goo.gl/2zTDJzVFqQ5QfdNb6" },
+                { name: "Nasiyan Jain Temple - Ajmer", img: "https://www.trawell.in/admin/images/upload/197582939Ajmer_Nasiyan_Jain_Temple_Main.jpg", map: "https://maps.app.goo.gl/jDfkDsKwEGTN8soz5"},
+                { name: "Pushkar Lake - Ajmer", img: "https://cdn.britannica.com/68/124668-004-91D865B4/Ghats-Pushkar-Lake-India-Rajasthan.jpg", map: "https://maps.app.goo.gl/QpTXm62r8zPpt8wPA"},
+                { name: "Ajmer Sharif Dargah - Ajmer", img: "https://d2dzi65yjecjnt.cloudfront.net/405980.jpg", map: "https://maps.app.goo.gl/jjMAPPXkT4qcBWL3A"},
+            ],
+            delhi: [
+                { name: "Jama Masjid - Delhi", img: "https://img.staticmb.com/mbcontent/images/crop/uploads/2022/7/jama-masjid-delhi_0_1200.jpg", map:"https://maps.app.goo.gl/uNXzB2yzkd8Q6kKB8"},
+                { name: "Qutub Minar - Delhi", img: "https://www.thedelhitours.com/blog/wp-content/uploads/2024/09/Qutub-Minar.jpg", map:"https://maps.app.goo.gl/jjNYEfVwHwCTnCHg9"},
+                { name: "India Gate - Delhi", img: "https://i.ibb.co/4S2S4XV/india-gate-delhi-1-attr-hero.jpg", map:"https://maps.app.goo.gl/Gi4NTaCtp39agKrK6"},
+                { name: "Red Fort - Delhi", img: "https://cdn.britannica.com/20/189820-050-D650A54D/Red-Fort-Old-Delhi-India.jpg", map:"https://maps.app.goo.gl/9csCk1e9QNk7uDqXA"},
+                { name: "Rashtrapati Bhawan - Delhi", img: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/04/23/9a/2f/rashtrapati-bhavan.jpg", map:"https://maps.app.goo.gl/YbqGCiZqNWqdbPBw6"},
+                { name: "Humayun Tomb - Delhi", img: "https://ebnw.net/wp-content/uploads/2024/07/A-592.png", map:"https://maps.app.goo.gl/UTo4DX5L8m95hd759"},
+                { name: "Shanti Van - Delhi", img: "https://delhitourism.travel/images/places-to-visit/headers/shanti-vana-delhi-entry-fee-timings-holidays-reviews-header.jpg", map:"https://maps.app.goo.gl/b9vVa73NLW5QpaZo7"},
+                { name: "Lotus Temple - Delhi", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/LotusDelhi.jpg/640px-LotusDelhi.jpg", map:"https://maps.app.goo.gl/UF7LoSLLwYpwczmWA"},
+                { name: "Lodhi Gardens - Delhi", img: "https://apnayatra.com/wp-content/uploads/2023/07/Lodhi-Garden-Delhi0.jpg", map:"https://maps.app.goo.gl/Fp2dNA9s43ks4h3QA"},
+                { name: "Jantar Mantar Delhi", img: "https://www.jaypeehotels.com/blog/wp-content/uploads/2024/09/Blog-5-scaled.jpg", map:"https://maps.app.goo.gl/fWdk2NzfHCJYAV6q6"},
+                { name: "Cannaut Palace - Delhi", img: "https://static.toiimg.com/thumb/resizemode-4,width-1280,height-720,msid-109642991/109642991.jpg", map:"https://maps.app.goo.gl/weMqJj4cE27EASvb6"},
+                { name: "Chandni Chowk - Delhi", img: "https://cdn.getyourguide.com/img/tour/64b03558e5675.jpeg/146.jpg", map:"https://maps.app.goo.gl/DDosf9awqZWnP8G79"},
+            ],
+            dubai: [
+                { name: "Burj Khalifa - Dubai", img: "https://images.squarespace-cdn.com/content/v1/5f9bfe2c5e5d0e392110f029/5a7abf91-bb6e-49f6-ab40-d94989bea784/Burj+Khalifa+at+night.jpg", map: "https://maps.app.goo.gl/D6QHhHtiVsTvPxgD9"},
+                { name: "Dubai Mall - Dubai", img: "https://cdn.properties.emaar.com/wp-content/uploads/2024/06/Untitled-1-2.jpg", map: "https://maps.app.goo.gl/hxTXt1NqDNcXYNtMA" },
+                { name: "Dubai Miracle Garden - Dubai", img: "https://media1.thrillophilia.com/filestore/bpcbhiawkb43y6bczofc2ww31h2f_Dubai_Miracle_Garden_11f44dc19f.jpg", map: "https://maps.app.goo.gl/3oRgjZVEsLGYBKjv9" },
+                { name: "The Dubai Fountain - Dubai", img: "https://images.memphistours.com/large/c15dea4ec50a72c521f9d8c770395c4c.jpg", map: "https://maps.app.goo.gl/LPy25REwf7t9S9dy9" },
+                { name: "Palm Jumeirah - Dubai", img: "https://www.viessmann.sg/content/dam/public-brands/master/references/palm-islands-dubai/Palm-Islands-Dubai-Haeder-16-9-1920x1080px.jpg/_jcr_content/renditions/original./Palm-Islands-Dubai-Haeder-16-9-1920x1080px.jpg", map: "https://maps.app.goo.gl/AJW7VAPU7TTzLmsy6" },
+                { name: "Dubai Creek - Dubai", img: "https://d33om22pidobo4.cloudfront.net/areaguides/thumbnailimages/dubai-creek-harbour1x-1png-87405877-b6ca-472e-8e74-dc41a0a0c32epngd1000x666-y-fwebpjpegd1000x666-y-fwebpjpegd1000x666-y-fwebp.jpeg", map: "https://maps.app.goo.gl/M4xrYZ6pNyNJ4Ged8" },
+                { name: "Al Fahidi Historical Neighbourhood - Dubai", img: "https://www.visitdubai.com/-/media/gathercontent/poi/a/al-fahidi-historical-neighbourhood/fallback-image/al-fahidi-historical-neighbourhood.jpg", map: "https://maps.app.goo.gl/jwx3Dq9ehLizThpt5" },
+                { name: "The Dubai desert - Dubai", img: "https://www.arabian-adventures.com/on/demandware.static/-/Sites-dnata-master-catalog/default/dw5c573345/images/large/camel-ride-DESERT-April23-1232x1232.jpg", map: "https://maps.app.goo.gl/FSJUba7eE2eHMeuM6" },
+                { name: "Global Village - Dubai", img: "https://media-cdn.tripadvisor.com/media/attractions-splice-spp-674x446/12/1d/ee/a1.jpg", map: "https://maps.app.goo.gl/UsACx6Xkm67k4eDr5" },
+                { name: "Dubai Opera - Dubai", img: "https://www.visitdubai.com/-/media/gathercontent/poi/d/dubai-opera/fallback-image/dubai-opera.jpg", map: "https://maps.app.goo.gl/zkRpaG2ED8i22a5V6" },
+                { name: "Dubai Marina - Dubai", img: "https://static.independent.co.uk/2023/07/11/09/iStock-1439980218.jpg?width=1200&height=900&fit=crop", map: "https://maps.app.goo.gl/4vLBowKpYuAcnyC37" },
+                { name: "Burj Al Arab - Dubai", img: "https://cdn.britannica.com/68/250068-050-B0AD857A/Burj-Al-Arab-luxury-hotel-Dubai.jpg", map: "https://maps.app.goo.gl/rNNNJKfdLxoUmNnTA" },
+                { name: "Museum of the Future - Dubai", img: "https://visitdubai.com/-/media/images/leisure/campaigns/dubai-presents/itineraries/spy/spy-media-museum-of-the-future.jpg", map: "https://maps.app.goo.gl/5bA1GDzKw3cWGuUw9" },
+
+            ],
+            europe: [
+                { name: "Eiffel Tower, France", img: "https://images.stockcake.com/public/2/3/6/23600bb3-9672-4b60-90a0-dd29fa8019e6_large/eiffel-tower-night-stockcake.jpg", map: "https://maps.app.goo.gl/KSZG6LBFGP9JfSCJ6" },
+                { name: "Colosseu - Italy", img: "https://cdn.mos.cms.futurecdn.net/BiNbcY5fXy9Lra47jqHKGK.jpg", map: "https://maps.app.goo.gl/41FfNZyR7LYbeJxX7" },
+                { name: "Santorini - Greece", img: "https://img.imageboss.me/greca/width/3840/format:webp/5a214aaa378d8.jpeg", map: "https://maps.app.goo.gl/q6CzuEe624FvTTW28" },
+            ],
+            hydrabad: [
+                { name: "Charminar - Hyderabad", img: "https://www.hoteldekho.com/storage/img/tourattraction/1651214166charminar.jpg", map: "https://maps.app.goo.gl/2n77mnBZACCGBzow6" },
+                { name: "Golconda Fort - Hyderabad", img: "https://media.tacdn.com/media/attractions-splice-spp-674x446/06/71/ad/ab.jpg", map: "https://maps.app.goo.gl/HBiZRC3Bgm5S2G1X7" },
+                { name: "Salar Jung Museum - Hyderabad", img: "https://salarjungmuseum.in/images/Velied_Rebecca/1(3).jpg", map: "https://maps.app.goo.gl/7LHAwXrzBHMHEm1NA" },
+                { name: "Birla Mandir - Hyderabad", img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgpFgpicxYTaUVY2LG9rX0AxZqOwSk_3eH4rvyNHvJRvCWuBc9Smyym2T1BuhFDpew_nwxRGCcB1uJnfrCgYJStZ9rgmEHB78U7egjI3fRQ3uV_PJ_cK0E1oaldPTTs4FrnEW78aJYoWJFW/s700/birla-mandir.jpg", map: "https://maps.app.goo.gl/4TWx9tUaTPniLYvX7" },
+            ],
+            hawaii: [
+                { name: "Haleakala National Park - Hawaii", img: "https://cdn.britannica.com/05/102905-050-5810E68C/Oheo-Gulch-Haleakala-National-Park-Hawaii-Maui.jpg", map: "https://maps.app.goo.gl/sx1JShY4WEZ2izg17"},
+                { name: "Hawaii Volcanoes National Park - Hawaii", img: "https://www.usatoday.com/gcdn/-mm-/af75a4a62d29af0189a147a6a66d8d1b18073da9/c=0-104-2048-1261/local/-/media/2016/10/05/USATODAY/USATODAY/636112853233965211-test.jpg", map:"https://maps.app.goo.gl/nNugv83jxrEb65758"},
+                { name: "Mauna Kea - Hawaii", img: "https://images.trvl-media.com/localexpert/381884/891e9afa-9f67-411a-94c0-abd308e73895.jpg", map:"https://maps.app.goo.gl/aMtpLPrT1smoXeUu7"},
+                { name: "Waimea Canyon - Hawaii", img: "https://www.gohawaii.com/sites/default/files/styles/image_gallery_bg_xl/public/hero-unit-images/KVB-Waimea_Canyon-091315_0.jpg", map:"https://maps.app.goo.gl/kVxuVAtJhcddqwrU7"},
+            ],
+            italy: [
+                { name: "Colosseum - Italy", img: "https://cdn.mos.cms.futurecdn.net/BiNbcY5fXy9Lra47jqHKGK.jpg", map: "https://maps.app.goo.gl/41FfNZyR7LYbeJxX7" },
+                { name: "Trevi Fountain - Italy", img: "https://www.flamingotravels.co.in/_next/image?url=https%3A%2F%2Fimgcdn.flamingotravels.co.in%2FImages%2FPlacesOfInterest%2Fget-a-chance-to-see-the-beautiful-trevi-fountain-rome-things-to-do.jpg&w=828&q=90", map: "https://maps.app.goo.gl/eR2PJfwkTT6EeqYu6" },
+                { name: "Pantheon - Italy", img: "https://www.italiandualcitizenship.net/wp-content/uploads/2019/03/History-of-the-Pantheon-Italy.jpg", map: "https://maps.app.goo.gl/S9bMxncQPbh4GV55A" },
+                { name: "Doumo di Milano - Italy", img: "https://pisa1940.com/cdn/shop/articles/duomo_milano_pisa.png", map: "https://maps.app.goo.gl/BGzF5qHb54VLodUa6" },
+                { name: "St.Peter's Basilica - Italy", img: "https://lp-cms-production.imgix.net/2024-02/shutterstockRF160245212.jpg", map: "https://maps.app.goo.gl/1yGxsKThbccp4r4M8" },
+                { name: "Vatican Museums - Italy", img: "https://content.whygo.com/wp-content/uploads/sites/2/2007/07/vaticanmuseum2.jpg", map: "https://maps.app.goo.gl/n5MAt3Wq4wfVjREA8" },
+            ],
+            iceland: [
+                { name: "Blue Lagoon - Iceland", img: "https://images.ctfassets.net/w65k7w0nsb8q/6RINnJSwvuUo88s8Mgc4s4/46f766f05011c6b85e0f7bdd36d6cf12/Blue_Lagoon_Northernlights.jpg", map: "https://maps.app.goo.gl/U5H4sph33kEJidQk7" },
+                { name: "Gullfoss - Iceland", img: "https://www.ntounas.gr/wp-content/uploads/2020/01/20190927_222749.jpg", map: "https://maps.app.goo.gl/cs8WPk3otwfPUVPX6" },
+                { name: "Geysir - Iceland", img: "https://media.tacdn.com/media/attractions-splice-spp-674x446/0b/ef/44/fb.jpg", map: "https://maps.app.goo.gl/GBBGoJxUZxQETbJh6" },
+                { name: "Jökulsárlón - Iceland", img: "https://i0.wp.com/playiceland.is/wp-content/uploads/2021/09/Jokulsarlon_iceland.jpg", map: "https://maps.app.goo.gl/GYeQ12ZSBfnwSjFF8"},
+            ],
+            jaipur: [
+                { name: "Amber Fort - Jaipur", img: "https://hblimg.mmtcdn.com/content/hubble/img/jaipur/mmt/activities/m_activities_amber_fort_2_l_436_573.jpg", map:"https://maps.app.goo.gl/yDXTTSKV6agbSGHL8"},
+                { name: "Hawa Mahal - Jaipur", img: "https://cdn.britannica.com/25/242225-050-72142DF7/Front-facade-of-Palace-of-the-Winds-Hawa-Mahal-Jaipur-Rajasthan-India.jpg", map:"https://maps.app.goo.gl/SRDCBZ7izDXjpNf77"},
+                { name: "Jantar Mantar - Jaipur", img: "https://jaipurtourism.co.in/images/places-to-visit/header/jantar-mantar-jaipur-entry-fee-timings-holidays-reviews-header.jpg", map:"https://maps.app.goo.gl/yrK4nx3yho73XrzEA"},
+                { name: "City Palace - Jaipur", img: "https://images.squarespace-cdn.com/content/v1/5a3bb03b4c326d76de73ddaa/669a47b5-f41b-4300-b910-17cb3a5bb594/The+Common+Wanderer-2155-2.jpg", map:"https://maps.app.goo.gl/sV9ENU2yTXYzudh27"},
+                { name: "Nahargarh Fort - Jaipur", img: "https://img.veenaworld.com/wp-content/uploads/2021/09/Rajasthan-scaled.jpg", map:"https://maps.app.goo.gl/p88eTEeePYFDNnL4A"},
+                { name: "Jaigarh Fort - Jaipur", img: "https://jaipurtourism.co.in/images/places-to-visit/header/jaigarh-fort-jaipur-tourism-entry-fee-timings-holidays-reviews-header.jpg", map:"https://maps.app.goo.gl/LefbUZBUGYA27ie38"},
+                { name: "Birla Mandir - Jaipur", img: "https://www.travel-rajasthan.com/images/experiance-in-rajsthan/temples/birla-temple-travel-rajasthan.jpg", map:"https://maps.app.goo.gl/JorQcZ3iZZwbUyKDA"},
+                { name: "Jal Mahal - Jaipur", img: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0a/c4/72/f6/jal-mahal-jaipur-tour.jpg", map:"https://maps.app.goo.gl/xny3FjnJizzMX2V29"},
+                { name: "Albert Hall Museum - Jaipur", img: "https://img.veenaworld.com/wp-content/uploads/2021/07/Albert-Hall-Museum-Jaipur-Ticket-Price-History-and-Timings-scaled.jpg", map:"https://maps.app.goo.gl/9qgY1wZc2GuvAB896"},
+            ],
+            kashmir: [
+                { name: "Amarnath Cave Temple - Kashmir", img: "https://www.tourmyindia.com/states/jammu-kashmir/image/amarnath-cave-temple2.jpg", map:"https://maps.app.goo.gl/MWrh3eAwR7kPC8wS9"},
+                { name: "Dal Lake - Kashmir", img: "https://www.ekashmirtourism.com/wp-content/uploads/2022/12/dal-lake-kashmir-in-winter.jpg", map:"https://maps.app.goo.gl/zdQLGzyRqFPWhCVXA"},
+                { name: "Nishat Bagh - Kashmir", img: "https://www.tourmyindia.com/states/jammu-kashmir/image/nishat-garden-srinagar.jpg", map:"https://maps.app.goo.gl/ANutwS7zMCwkcGeC6"},
+                { name: "Shalimar Bagh - Jammu and Kashmir", img: "https://www.tourmyindia.com/states/jammu-kashmir/image/shalimar-bagh-srinagar1.jpg", map:"https://maps.app.goo.gl/aJi92FMXhar64dLt7"},
+                { name: "Chashm-e-Shahi - Kashmir", img: "https://kashmirlife.net/wp-content/uploads/2024/02/Cheshma-Shahi-Srinagar.jpg", map:"https://maps.app.goo.gl/KMKhTDj2Tbubq4w76"},
+                { name: "Pari Mahal - Kashmir", img: "https://kashmirlife.net/wp-content/uploads/2024/01/Pari-Mahal-Front-View.jpg", map:"https://maps.app.goo.gl/66Rzu2aWPULJDreu7"},
+                { name: "Vaishno Devi - Jammu and Kashmir", img: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/17/34/98/37/lrm-export-31665251117501.jpg", map:"https://maps.app.goo.gl/vdijVnLR2QiV6cHA9"},
+                { name: "Shahi Chashma - Jammu and Kashmir", img: "https://www.tourmyindia.com/states/jammu-kashmir/image/chashme-shahi-srinagar2.jpg", map:"https://maps.app.goo.gl/KMKhTDj2Tbubq4w76"},
+            ],
+            kolkata: [
+                { name: "Victoria Memorial - Kolkata", img: "https://cdn.britannica.com/74/127174-050-4E634E93/Victoria-Memorial-Hall-Kolkata-India-West-Bengal.jpg", map:"https://maps.app.goo.gl/a8giLkPFjKLqHdLa9"},
+                { name: "Indian Museum - Kolkata", img: "https://kolkatatourism.travel/images/places-to-visit/headers/indian-museum-kolkata-entry-fee-timings-holidays-reviews-header.jpg", map:"https://maps.app.goo.gl/SfF9EYHEUqbqxjNH6"},
+                { name: "Birla Planetarium - Kolkata", img: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/06/67/4b/7a/birla-planetarium.jpg", map:"https://maps.app.goo.gl/W6KS5Ao7aKWUDyJb9"},
+                { name: "Fort William - Kolkata", img: "https://www.holidify.com/images/cmsuploads/compressed/92d3dcf14c4b28a3eef774f34b0c3b56_20200804163516.jpg", map:"https://maps.app.goo.gl/BJKPcVBKsB1TyiCC8"},
+                { name: "Science City - Kolkata", img: "https://kolkatatourism.travel/images/places-to-visit/headers/science-city-kolkata-entry-fee-timings-holidays-reviews-header.jpg", map:"https://maps.app.goo.gl/jo9EdtESsdMSFmQe9"},
+                { name: "National Library - Kolkata", img: "https://kolkatatourism.travel/images/places-to-visit/headers/national-library-kolkata-entry-fee-timings-holidays-reviews-header.jpg", map:"https://maps.app.goo.gl/RfRJdjSeFqzNVyWi8"},
+                { name: "St paul's Cathedral - Kolkata", img: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0c/65/75/3b/st-paul-s-cathedral.jpg", map:"https://maps.app.goo.gl/X4eyJ7dNhC8Bi2Ku6"},
+                { name: "Tipu sultan Mosque - Kolkata", img: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/63/9d/25/tippu-sultan-s-mosque.jpg", map:"https://maps.app.goo.gl/f6aRJfkmEkCqqF7q8"},
+            ],
+            karnataka: [
+                { name: "Lalbagh Botanical Garden - Karnataka", img: "https://karnatakatourism.org/wp-content/uploads/2020/06/Bengaluru-Lalbhag-1.jpg", map:"https://maps.app.goo.gl/LHhR5cQExLGjv3qx9"},
+                { name: "Brindaban Garden - Karnataka", img: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/74/7b/cc/20180624-141857-largejpg.jpg", map:"https://maps.app.goo.gl/KkyXSMpLmhLXPW4D6"},
+                { name: "Bangalore Palace - Karnataka", img: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0e/01/e4/9c/more-far.jpg", map:"https://maps.app.goo.gl/h6gD8L2saeqi9vGSA"},
+                { name: "Nandi Temple - Karnataka", img: "https://media-cdn.tripadvisor.com/media/photo-s/16/4f/2e/d2/nandi-statue.jpg", map:"https://maps.app.goo.gl/tNBGJJKmYQy6WC9o6"},
+                { name: "Gavi Gangadhareshwara Temple - Karnataka", img: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/11/2b/91/99/gopuram-at-floor-level.jpg",map:"https://maps.app.goo.gl/YnCJS8cJGWuNWLeJ8"},
+                { name: "Kempegowda Tower - Karnataka", img: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/11/c6/0c/a0/kempegowda-tower.jpg", map:"https://maps.app.goo.gl/h7Q5Kb59gnqvfTFp7"},
+                { name: "Tippu Sultan Summer Palace - Karnataka", img: "https://www.beerandcroissants.com/wp-content/uploads/2018/09/Bengaluru-Tipus-summer-palace-front.jpg", map:"https://maps.app.goo.gl/7WtRoD7T2zLNigDNA"},
+                { name: "Gol Gumbaj - Karnataka", img: "https://karnatakatourism.org/wp-content/uploads/2020/06/v1.jpg", map:"https://maps.app.goo.gl/zTEvWsDahi9j8sUx7"},
+                { name: "Coorg - Karnataka", img: "https://www.holidify.com/images/bgImages/COORG.jpg", map:"https://maps.app.goo.gl/nWEhE5u9WXgm7BPp6"},
+                { name: "Mysore palace - Karnataka", img: "https://karnatakatourism.org/wp-content/uploads/2020/06/Mysuru-Palace-banner-1920_1100.jpg", map:"https://maps.app.goo.gl/pbqMRHtKGc9nm8SAA"},
+                { name: "Statue of Gomateshwara - Karnataka", img: "https://imgmediagumlet.lbb.in/media/2018/08/5b68859d94deab1965749b50_1533576605522.jpg", map:"https://maps.app.goo.gl/L6K1VNqk6zJtT2oi8"},
+            ],
+            mumbai: [
+                { name: "Ajanta Caves - Maharashtra", img: "https://cdn.britannica.com/70/153470-050-F4594C27/Ajanta-Caves-Maharashtra-India.jpg", map:"https://maps.app.goo.gl/X1zwBQgKv7DeN3QA7"},
+                { name: "Ellora Caves - Maharashtra", img: "https://static.toiimg.com/thumb/95506051/Ellora-Caves-in-Aurangabad-Maharashtra.jpg", map:"https://maps.app.goo.gl/hFVv8uFci3thSfkV6"},
+                { name: "Elephanta Caves - Maharashtra", img: "https://www.trawell.in/admin/images/upload/955980144Mumbai_Elephanta_Caves_Main.jpg", map:"https://maps.app.goo.gl/BGEAXwWrBpscMgZz7"},
+                { name: "Gateway of India - Mumbai, Maharashtra", img: "https://www.fabhotels.com/blog/wp-content/uploads/2019/05/Gateway-Of-India_600-1.jpg", map:"https://maps.app.goo.gl/3VhcWKByVSxpfYCr8"},
+                { name: "Hanging Garden - Mumbai, Maharashtra", img: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/75/34/e0/hanging-garden.jpg", map:"https://maps.app.goo.gl/L8a1cJd5VCvyHe8i7"},
+                { name: "Malabar Hills - Maharashtra", img: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/01/cc/85/66/view-to-beach.jpg", map:"https://maps.app.goo.gl/7rE9mDwHT9wvNHEJ6"},
+                { name: "Tower of Silence - Maharashtra", img: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/02/dd/ca/15/tower-of-silence.jpg", map:"https://maps.app.goo.gl/kAQJuE5e5ZjC2geh8"},
+            ],
+            madhya_pradesh: [
+                { name: "Khajuraho - Madhya Pradesh", img: "https://indiatravel.com/wp-content/uploads/2022/03/khajuraho-slider-imggg-3.jpg", map:"https://maps.app.goo.gl/PiRBtXTydTBZKb9n6"},
+                { name: "Bandhavgarh National Park - Madhya Pradesh", img: "https://c8.alamy.com/comp/E2EC27/india-madhya-pradesh-state-bandhavgarh-national-park-entrance-of-the-E2EC27.jpg", map: "https://maps.app.goo.gl/EdSPSTTy349r5x868"},
+                { name: "Gwalior Fort - Madhya Pradesh", img: "https://lakshmisharath.com/wp-content/uploads/2024/01/Gwalior-GwaliorFort-1024x768.jpg", map: "https://maps.app.goo.gl/9KaamC77Tf3ioYdy7"},
+                { name: "Marble Rocks - Madhya Pradesh", img: "https://www.trawell.in/admin/images/upload/433308479Jabalpur_Marble_Rocks.jpg", map: "https://maps.app.goo.gl/KRFhVHKsQed3HZ2C6"},
+            ],
+            maldives: [
+                { name: "The Tsunami Monument", img: "https://imgcdn.flamingotravels.co.in/Images/PlacesOfInterest/Tsunami-Monument-Maldives.jpg", map: "https://maps.app.goo.gl/bFuspp4MK9wmZJLw6"},
+                { name: "National Museum - Maldives", img: "https://visitmaldives.s3.amazonaws.com/Gw1232YE/c/wh7bgdzk-large.jpg", map: "https://maps.app.goo.gl/TjbLVU3GW9jpg7e68"},
+                { name: "The Grand Friday Mosque", img: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0a/21/be/43/grand-friday-mosque.jpg", map: "https://maps.app.goo.gl/MCgvv1VQ1SW4yfNt7"},
+                { name: "Dolphin Spotting and Whale Submarine Rides", img: "https://cdn2.veltra.com/ptr/20190318205028_352562549_172_0.jpg", map: "https://maps.app.goo.gl/UzDc9chtvMna5vMg8"},
+                { name: "Seaside Grill", img: "https://media-cdn.tripadvisor.com/media/photo-s/14/15/1f/3e/dinning-area.jpg", map: "https://maps.app.goo.gl/ZWWqunFTQPF8FfHQ8"},
+            ],
+            north_america: [
+                { name: "Grand Canyon, USA", img: "https://www.ftd.travel/upload/attraction_image/2013-08-30-02-40-43grand-canyon-usa.jpg", map: "https://maps.app.goo.gl/7sSTGtehVFtDTq5D9" },
+                { name: "Niagara Falls, Canada", img: "https://cdn.aarp.net/content/dam/aarp/travel/destinations/2021/08/1140-journey-behind-the-falls.jpg", map: "https://maps.app.goo.gl/pcZrHRjsPVQ8UDZk8" },
+                { name: "Chichen Itza, Mexico", img: "https://images.odigoo.com/images/media/chichen-itza-a-coba/chichen-itza.jpg", map: "https://maps.app.goo.gl/ng18xwJ8ZAY8B1br8" },
+            ],
+            south_america: [
+                { name: "Christ the Redeemer, Brazil", img: "https://cdn.britannica.com/54/150754-050-5B93A950/statue-Christ-the-Redeemer-Rio-de-Janeiro.jpg", map: "https://maps.app.goo.gl/3b1LoCNbXf85qyXs5" },
+                { name: "Iguazu Falls, Argentina", img: "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/3f/5b/77.jpg", map: "https://maps.app.goo.gl/wHhsry7EouAcSHSt5" },
+                { name: "Galapagos Islands, Ecuador", img: "https://cdn.britannica.com/11/154211-050-FBEDB2C1/Bartolome-Island-Galapagos-Islands-Ecuador.jpg", map: "https://maps.app.goo.gl/iPqua2V3UUqYsHJZ6" },
+            ],
+            odissa: [
+                { name: "Jagannath Temple Puri - Odissa", img: "https://sannidhi.net/wp-content/uploads/2024/01/jagannath1.png", map:"https://maps.app.goo.gl/NgvCvJLdnK977ghz5"},
+                { name: "Sun Temple - Odisha", img: "https://alternativetoursindia.com/wp-content/uploads/2018/10/konark-sun-temple-odisha.jpg", map:"https://maps.app.goo.gl/e44HqajbAkgfVrLG8"},
+                { name: "Dhauli Giri - Odisha", img: "https://www.dhauli.net/images/about-dhauli.jpg", map:"https://maps.app.goo.gl/NVTbA63aQ5HPhcF27"},
+                { name: "Khandagiri Caves - Odisha", img: "https://img.veenaworld.com/wp-content/uploads/2021/10/Udaygiri-and-Khandagiri.jpg", map:"https://maps.app.goo.gl/zQMU153GKPftsZdL7"},
+                { name: "Udaygiri Caves - Odisha", img: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/10/aa/2f/d6/img-20170915-125714-largejpg.jpg", map:"https://maps.app.goo.gl/zQMU153GKPftsZdL7"},
+                { name: "Chilka Lake - Odissa", img: "https://www.chilika.com/images/honeymoon-island-thumbnail.jpg", map:"https://maps.app.goo.gl/e6MMnrgiLoz732ew9"},
+                { name: "Black pagoda/Sun Temple Konark - Odissa", img: "https://imgcld.yatra.com/holiday-india/image/upload/t_yt_blog_w_800_c_fill_g_auto_q_auto:good_f_jpg/v1442213315/blog/Legend_of_the_Konark_Sun_Temple_2.jpg", map:"https://maps.app.goo.gl/RcE7y7DNYmKyfkpt6"},
+                { name: "Lingaraj Temple - Odissa", img: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/ad/a1/f6/lingaraja-temple.jpg", map:"https://maps.app.goo.gl/JgBMSBEKqdyyAKdC7"},
+            ],
+            paris: [
+                { name: "Eiffel Tower - Paris", img: "https://images.stockcake.com/public/2/3/6/23600bb3-9672-4b60-90a0-dd29fa8019e6_large/eiffel-tower-night-stockcake.jpg", map:"https://maps.app.goo.gl/KSZG6LBFGP9JfSCJ6"},
+                { name: "Louvre Museum - Paris", img: "https://api-www.louvre.fr/sites/default/files/2021-01/cour-napoleon-et-pyramide_1.jpg", map:"https://maps.app.goo.gl/FoBjxEA7VB7jadYX8"},
+                { name: "Cathédrale Notre-Dame de Paris", img: "https://cdn.britannica.com/29/255529-050-63A22A3C/notre-dame-de-paris-cathedral-paris-france.jpg", map:"https://maps.app.goo.gl/gNWruHqWrg9XocYU7"},
+                { name: "Arc de Triomphe", img: "https://cdn.britannica.com/66/80466-050-2E125F5C/Arc-de-Triomphe-Paris-France.jpg", map:"https://maps.app.goo.gl/fALSxTcRYdWHp5Ut5"},
+                { name: "Musée d'Orsay - Paris", img: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/13/26/b3/6e/20180601-122841-largejpg.jpg", map:"https://maps.app.goo.gl/n54b1yyUoiGWsrer9"},
+                { name: "Basilique du Sacré-Cœur de Montmartre - Paris", img: "https://media.cntraveler.com/photos/58ebdfe40c1a3d2af158f565/16:9/w_2560,c_limit/paris-sacre-coeur-GettyImages-466097160.jpg", map:"https://maps.app.goo.gl/ftVekwJBSwaFXYzD7"},
+                { name: "Sainte-Chapelle - Paris", img: "https://cdn.britannica.com/32/242532-050-AB384633/Illuminated-interior-Sainte-Chapelle-Paris-France.jpg", map:"https://maps.app.goo.gl/YyJ39dBX2A8ou8V5A"},
+                { name: "Tuileries Garden - Paris", img: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/06/08/d8/a8/jardin-des-tuileries.jpg", map:"https://maps.app.goo.gl/4J4AivxQ74UoYcvs7"},
+                { name: "Palace of Versailles - Paris", img: "https://cdn.britannica.com/63/256363-050-4334DD67/versailles-palace-facade-paris-france-chateau-de-versailles.jpg", map:"https://maps.app.goo.gl/A4MZHX3sjoPDEiPMA"},
+                { name: "Musée de l'Orangerie - Paris", img: "https://www.cometoparis.com/data/layout_grouping/product_index_slideshow/72999_Musee-orangerie_Traktorminze.1000w.jpg", map:"https://maps.app.goo.gl/DFn8p7XHqTMq4khC9"},
+                { name: "Le Marais - Paris", img: "https://parisitour.fr/wp-content/uploads/2023/04/Places-des-vosges-le-quartier-du-marais.jpg", map:"https://maps.app.goo.gl/m93raHxGDevyAjiC8"},
+                { name: "Fondation Louis Vuitton - Paris", img: "https://www.inexhibit.com/wp-content/uploads/2024/03/Fondation-Louis-Vuitton-Paris-architect-Frank-Gehry-ph-Bianchini-Inexhibit.jpg", map:"https://maps.app.goo.gl/S6fWWhLxpN9c8XJ96"},
+                { name: "Pont Alexandre III - Paris", img: "https://www.thingstodoinparis.com/wp-content/uploads/Alexandre-iii-Bridge-in-Paris-Alexander-3-1024x673-1.jpg", map:"https://maps.app.goo.gl/feUboxun8PwwR2dE6"},
+                { name: "Disneyland Paris", img: "https://media.architecturaldigest.com/photos/621e2b8a0dfcde70e6b201e0/16:9/w_2560%2Cc_limit/SB_2614-HDR-scaled.jpeg", map:"https://maps.app.goo.gl/Q38KXwpf8Tz6cv4t9"},
+                { name: "Pont Neuf - Paris", img: "https://www.pariseater.com/wp-content/uploads/2024/09/pont-neuf-paris-1920x1024.jpg", map:"https://maps.app.goo.gl/smGScK2gwppmL17z5"},
+                { name: "Galeries Lafayette Haussmann", img: "https://www.exp1.com/blog/wp-content/uploads/sites/7/2020/07/Interior-of-Galeries-Lafayette-shown-floor-by-floor.jpg", map:"https://maps.app.goo.gl/v23BULQyzjoBwwEZA"},
+                { name: "Montparnasse Tower - Paris", img: "https://cdn.pixabay.com/photo/2019/08/07/14/29/montparnasse-tower-4390911_1280.jpg", map:"https://maps.app.goo.gl/nR1yD1uF47N54ifo8"},
+            ],
+            rajasthan: [
+                { name: "Jaisalmer Fort - Rajasthan", img: "https://www.rajasthandirect.com/wp-content/uploads/2012/11/Jaisalmer-Fort.jpg", map:"https://maps.app.goo.gl/gnm3RMhHbNx9ByHQ8"},
+                { name: "Jaswant Thada - Rajasthan", img: "https://travelogyindia.b-cdn.net/blog/wp-content/uploads/2019/02/Jaswant-Thada-Jodhpur.jpg", map:"https://maps.app.goo.gl/YYDSAL5PXLLUcBXs8"},
+                { name: "Kumbhalgarh Fort - Rajasthan", img: "https://www.fabhotels.com/blog/wp-content/uploads/2019/05/Kumbhalgarh_600.jpg", map:"https://maps.app.goo.gl/gb73a7c7Z1FAj52V7"},
+                { name: "Mehrangarh Fort - Rajasthan", img: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/99/ae/7f/images-14-largejpg.jpg", map:"https://maps.app.goo.gl/tHiiJJjKeqHd78vj8"},
+                { name: "Nagaur Fort - Rajasthan", img: "https://static.the.akdn/53832/1644531359-akaa-2013-nagaur-fort-india04_1.jpg", map:"https://maps.app.goo.gl/3KvqwgYLKy4c9oiU9"},
+                { name: "Sariska Tiger Reserve - Rajasthan", img: "https://upload.wikimedia.org/wikipedia/commons/e/e5/Sariska_Tiger_Reserve%2C_Alwar.jpg", map:"https://maps.app.goo.gl/eARiAcFiwoGSbnbz5"},
+                { name: "Sawai Madhopur - Rajasthan", img: "https://www.ranthamborenationalpark.in/images/sawai-madhopur2.jpg", map:"https://maps.app.goo.gl/hMhvyjgNAYXooyT57"},
+                { name: "Tower of Victory - Chittorhgarh", img: "https://www.trawell.in/admin/images/thumbs/131269324Chittorgarh_Vijay_Stambh_Main_thumb.jpg", map:"https://maps.app.goo.gl/dBws1iREoHiLvKqK9"},
+                { name: "Dilwara Temple - Rajasthan", img: "https://www.trawell.in/admin/images/upload/169351313Mount_Abu_Dilwara_Main.jpg", map:"https://maps.app.goo.gl/G2eVHqHub1xjb1587"},
+            ],
+            switzerland: [
+                { name: "Lake Lucerne - Switzerland", img: "https://www.worldatlas.com/r/w1200-q80/upload/e8/24/48/weggis-village-lake-lucerne-switzerland-eva-bocek.jpg", map:"https://maps.app.goo.gl/EfnhQXdm1wLCuGVW6"},
+                { name: "The Matterhorn - Switzerland", img: "https://arzotravels.com/wp-content/uploads/2017/11/Matterhorn-and-Zermatt-in-the-Swiss-Alps-best-places-to-ski.jpg", map:"https://maps.app.goo.gl/KgqLLetxtnLkVxUH9"},
+                { name: "Gornergrat - Switzerland", img: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0f/23/d2/4d/view-from-the-platform.jpg", map:"https://maps.app.goo.gl/9aYdFVovQnWAd7XXA"},
+                { name: "Lake Geneva - Switzerland", img: "https://deih43ym53wif.cloudfront.net/chillon-castle-geneva-lake-switzerland-shutterstock_361751813_fbaba5c297.jpeg", map:"https://maps.app.goo.gl/i47FUoTqyDghWEmF9"},
+            ],
+            tokyo: [
+                { name: "Tokyo Skytree - Tokyo", img: "https://www.tokyo-skytree.jp/en/enjoy/yakei/img/see_5/p7.jpg", map:"https://maps.app.goo.gl/s8bdTzKv5Eg2dncW9"},
+                { name: "Shibuya Crossing - Tokyo", img: "https://www.gotokyo.org/en/spot/78/images/78_0153_2_1400x1100.jpg", map:"https://maps.app.goo.gl/uozDeu8znQ8zhVhc8"},
+                { name: "Tokyo Tower - Tokyo", img: "https://www.japanrailpass.com.au/wp-content/uploads/2016/09/Tokyo-Tower.jpg", map:"https://maps.app.goo.gl/oToNQLv89nkcZ8WK6"},
+                { name: "Meiji Shrine - Tokyo", img: "https://loving-tokyo.com/en/wp-content/uploads/2020/02/meiji-jingu-shrine-main-complex-200210134821003.jpg", map:"https://maps.app.goo.gl/hWbhuA5ZTpA1kHgc7"},
+                { name: "Tsukiji Fish Market - Tokyo", img: "https://i0.wp.com/travelswithnano.com/wp-content/uploads/2016/04/tsukiji-fish-market-tokyo-18.jpg", map:"https://maps.app.goo.gl/gWYTdRUK2nRZaurc6"},
+                { name: "Asakusa - Tokyo", img: "https://www.japan365days.com/img/tokyo/sensoji_temple/sensoji-temple-asakusa-tokyo.jpg", map:"https://maps.app.goo.gl/ZVXM67qycWVeSHem9"},
+                { name: "Imperial Palace - Tokyo", img: "https://www.japan-guide.com/g18/3017_01.jpg", map:"https://maps.app.goo.gl/PFcdwZqeoDxZynys5"},
+                { name: "Shinjuku Gyoen National Garden - Tokyo", img: "https://www.japan-guide.com/g18/3034_001_01.jpg", map:"https://maps.app.goo.gl/FHezCwbHqy9zDuJLA"},
+            ],
+            tamil_nadu: [
+                { name: "Mahabalipuram - Tamil Nadu", img: "https://tourismtn.com/wp-content/uploads/2018/01/Mahabalipuram-696x391.jpg", map:"https://maps.app.goo.gl/L8qHoZoFHXwBR6Zb9"},
+                { name: "Kanyakumari - Tamil Nadu", img: "https://media-cdn.tripadvisor.com/media/photo-s/1b/47/d7/3f/kanyakumari-is-a-coastal.jpg", map:"https://maps.app.goo.gl/uSikx9QCuaV9Z4az5"},
+                { name: "Kumbakonam - Tamil Nadu", img: "https://cdn.britannica.com/61/1961-004-7F96046A/Vaishnava-temple-Kumbakonam-Sarangapani-India-state-Tamil.jpg", map:"https://maps.app.goo.gl/wspEW7T19TcwDMvC9"},
+                { name: "Rameswaram - Tamil Nadu", img: "https://s3.india.com/wp-content/uploads/2024/09/Rameswaram-rivers.jpg", map:"https://maps.app.goo.gl/zUEe3unTXqJ2R1Hd9"},
+                { name: "Thanjavur - Tamil Nadu", img: "https://cdn.britannica.com/84/196584-050-410B179D/Brihadishvara-Chola-temple-Thanjavur-India-Tamil-Nadu.jpg", map:"https://maps.app.goo.gl/5G33WSkJyFTbGXcK6"},
+                { name: "Tiruchirappalli - Tamil Nadu", img: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/01/23/3f/c5/gopurams-temple-gate.jpg", map:"https://maps.app.goo.gl/HrA97yyXse58rmLz5"},
+                { name: "Tirunelveli - Tamil Nadu", img: "https://mediaim.expedia.com/destination/1/0d5f02078ac5e82d21510b06f4fa3e05.jpg", map:"https://maps.app.goo.gl/aRqreaEChyxq8n8V6"},
+                { name: "Minakshi Temple - Tamil Nadu", img: "https://www.bhaktibharat.com/photo/mandir/meenakshi-mandir/dp.jpg", map:"https://maps.app.goo.gl/19HVi4CSfe6RgRKT9"},
+                { name: "Marina Beach - Tamil Nadu", img: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/09/96/26/64/marina-beach.jpg", map:"https://maps.app.goo.gl/jNpMjeuos5GbhWn7A"},
+                { name: "Brihadeeshwara Temple - Tamil Nadu", img: "https://cdn.britannica.com/66/250066-050-B34A9532/Brihadishvara-Temple-Thanjavur-Tamil-Nadu-India.jpg", map:"https://maps.app.goo.gl/FuZVudgKeUs1ech78"},
+            ],
+        };
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const destination = urlParams.get("destination");
+        const placesList = document.getElementById("places-list");
+        
+        if (destination && destinations[destination]) {
+            destinations[destination].forEach(place => {
+                const placeLink = document.createElement("a");
+                placeLink.href = place.map || "#";
+                placeLink.target = "_blank";
+                placeLink.className = "place";
+
+                const placeImg = document.createElement("img");
+                placeImg.src = place.img || "placeholder.jpg";
+                placeImg.alt = place.name;
+
+                const placeText = document.createElement("div");
+                placeText.textContent = place.name;
+
+                const directionsCircle = document.createElement("a");
+                directionsCircle.href = place.map || "#";
+                directionsCircle.target = "_blank";
+                directionsCircle.className = "directions-circle";
+                directionsCircle.textContent = "⤴";
+
+                placeLink.appendChild(placeImg);
+                placeLink.appendChild(placeText);
+                placeLink.appendChild(directionsCircle);
+
+                placesList.appendChild(placeLink);
+            });
+        } else {
+            placesList.textContent = "No places found for the selected destination.";
+        }
+    </script>
+</body>
+</html>
