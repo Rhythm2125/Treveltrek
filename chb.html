@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traveltrek Chatbot</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-image: url("styles/ims/bg.jpg");
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: 100% 100%;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background-color: #ffffff95;
+            color: #000000;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-button:hover {
+            background-color: #000000;
+            color: #ffffff;
+        }
+
+        .chat-container {
+            background-color: #ffffff95;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(to right, #000000a5, #000000a5);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .chat-header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .message.bot .message-content {
+            background-color: #f0f2f5;
+            color: #000000;
+        }
+
+        .message.user .message-content {
+            background-color: #000000;
+            color: white;
+        }
+
+        .chat-input {
+            padding: 20px;
+            border-top: 1px solid #ffffff;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #f0f2f5;
+            padding: 8px 16px;
+            border-radius: 24px;
+        }
+
+        .input-wrapper input {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+        }
+
+        .input-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .action-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            font-size: 18px;
+            padding: 4px;
+            transition: color 0.3s;
+        }
+
+        .action-button:hover {
+            color: #000000;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .send-button {
+            padding: 12px 24px;
+            background-color: #000000;
+            color: white;
+            border: none;
+            border-radius: 24px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .send-button:hover {
+            background-color: #000000;
+        }
+
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding: 0 20px;
+        }
+
+        .suggestion-chip {
+            padding: 6px 12px;
+            background-color: #f0f2f5;
+            border-radius: 16px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .suggestion-chip:hover {
+            background-color: #e5e7eb;
+        }
+
+        .emoji-picker {
+            position: absolute;
+            bottom: 80px;
+            left: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: none;
+            padding: 12px;
+            z-index: 1000;
+        }
+
+        .emoji-picker.active {
+            display: block;
+        }
+
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+        }
+
+        .emoji {
+            cursor: pointer;
+            font-size: 20px;
+            padding: 4px;
+            text-align: center;
+        }
+
+        .emoji:hover {
+            background-color: #f0f2f5;
+            border-radius: 4px;
+        }
+
+        .emoji-categories {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 8px;
+        }
+
+        .category-tab {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .category-tab:hover {
+            background-color: #f0f2f5;
+            border-radius: 4px;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .file-preview {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+            padding: 0 20px;
+        }
+
+        .file-item {
+            background-color: #f0f2f5;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="back-button" onclick="window.location.href='/'">
+            <i class="fas fa-arrow-left"></i> Back Home
+        </button>
+
+        <div class="chat-container">
+            <div class="chat-header">
+                <h1>Traveltrek Assistant</h1>
+                <p>Your personal travel planning Buddy</p>
+            </div>
+
+            <div class="chat-messages">
+                <div class="message bot">
+                    <div class="message-content">
+                        👋 Hello! I'm your travel planning assistant. I will help you to plan your perfect trip 🌟, could you tell me:
+                        • When you're planning to travel 📅
+                        • Your approximate budget 💰
+                        • What interests you most about Japan 🏯
+                        • How long you plan to stay ⏰
+                    </div>
+                </div>
+            </div>
+
+            <div class="suggestions">
+                <div class="suggestion-chip">🗓️ Best time to visit</div>
+                <div class="suggestion-chip">🎯 Popular destinations</div>
+                <div class="suggestion-chip">💰 Budget planning</div>
+                <div class="suggestion-chip">📝 Local customs</div>
+            </div>
+
+            <div class="file-preview"></div>
+
+            <div class="chat-input">
+                <div class="input-wrapper">
+                    <input type="text" placeholder="Type your message here..." />
+                    <div class="input-actions">
+                        <button class="action-button emoji-toggle">
+                            <i class="far fa-smile"></i>
+                        </button>
+                        <label for="file-input" class="action-button">
+                            <i class="fas fa-paperclip"></i>
+                        </label>
+                        <input type="file" id="file-input" multiple>
+                    <button class="send-button">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="emoji-picker">
+            <div class="emoji-categories">
+                <button class="category-tab" data-category="smileys">😀</button>
+                <button class="category-tab" data-category="animals">🐶</button>
+                <button class="category-tab" data-category="travel">✈️</button>
+                <button class="category-tab" data-category="food">🍎</button>
+            </div>
+            <div class="emoji-grid"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.querySelector('.input-wrapper input');
+            const sendButton = document.querySelector('.send-button');
+            const chatMessages = document.querySelector('.chat-messages');
+            const suggestionChips = document.querySelectorAll('.suggestion-chip');
+            const emojiToggle = document.querySelector('.emoji-toggle');
+            const emojiPicker = document.querySelector('.emoji-picker');
+            const emojis = document.querySelectorAll('.emoji');
+            const emojiGrid = document.querySelector('.emoji-grid');
+            const categoryTabs = document.querySelectorAll('.category-tab');
+            const fileInput = document.querySelector('#file-input');
+            const filePreview = document.querySelector('.file-preview');
+            const emojiCategories = {
+                smileys: ['😀', '😁', '😂', '🤣', '😃', '😄', '😅', '😆', '😉', '😊', '😋', '😎', '😍', '😘', '😗', '😙', '😚'],
+                animals: ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🐦', '🐧', '🐤'],
+                travel: ['✈️', '🚂', '🚗', '🚕', '🚙', '🚌', '🚎', '🏍️', '🚤', '🚢', '🚀', '🗺️', '🌍', '🏖️', '🏞️', '🏜️', '🏔️', '🏰'],
+                food: ['🍎', '🍌', '🍒', '🍇', '🍉', '🍓', '🍑', '🥝', '🍍', '🍋', '🍔', '🍟', '🌭', '🍕', '🥪', '🥗', '🍤', '🍣']
+            };
+
+            const API_KEY = '7884c36e200e412dba889473ac71675a'; 
+            const API_URL = 'https://api.openai.com/v1/chat/completions';
+
+            function addMessage(content, isUser = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+                messageDiv.innerHTML = `
+                    <div class="message-content">
+                        ${content}
+                    </div>
+                `;
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            async function fetchChatGPTResponse(message) {
+                return new Promise((resolve) => {
+                    setTimeout(() => resolve(`You said: ${message}`), 500); // Simulated response
+                });
+            }
+
+            async function handleSend() {
+                const message = input.value.trim();
+                if (!message) return; // Do nothing if input is empty
+
+                // Add user's message to the chat
+                addMessage(message, true);
+
+                // Clear input
+                input.value = '';
+
+                // Get bot's response
+                const botMessage = await fetchChatGPTResponse(message);
+                addMessage(botMessage);
+            }
+
+            // Attach event listener for send button
+            sendButton.addEventListener('click', (e) => {
+                e.preventDefault(); // Prevent default form submission
+                handleSend();
+            });
+
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); // Prevent default behavior
+                    handleSend();
+                }
+            });
+
+            // Suggestion chips functionality
+            suggestionChips.forEach(chip => {
+                chip.addEventListener('click', async () => {
+                    const message = chip.textContent;
+                    addMessage(message, true);
+
+                    const botMessage = await fetchChatGPTResponse(message);
+                    addMessage(botMessage);
+                });
+            });
+
+            // Toggle emoji picker visibility
+            emojiToggle.addEventListener('click', () => {
+                emojiPicker.classList.toggle('active');
+            });
+
+            // Add emoji to input field
+            emojis.forEach(emoji => {
+                emoji.addEventListener('click', () => {
+                    input.value += emoji.textContent;
+                    emojiPicker.classList.remove('active');
+                });
+            });
+
+            // Load emojis for the selected category
+            function loadEmojis(category) {
+                emojiGrid.innerHTML = ''; // Clear existing emojis
+                emojiCategories[category].forEach(emoji => {
+                    const emojiSpan = document.createElement('span');
+                    emojiSpan.className = 'emoji';
+                    emojiSpan.textContent = emoji;
+                    emojiGrid.appendChild(emojiSpan);
+
+                    // Add click event for each emoji
+                    emojiSpan.addEventListener('click', () => {
+                        input.value += emojiSpan.textContent;
+                        emojiPicker.classList.remove('active'); // Close picker after selection
+                    });
+                });
+            }
+
+            // Event listener for category tabs
+            categoryTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const category = tab.dataset.category;
+                    loadEmojis(category);
+                });
+            });
+
+            // Load default category (smileys)
+            loadEmojis('smileys');
+
+            // Close emoji picker when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!emojiPicker.contains(e.target) && !emojiToggle.contains(e.target)) {
+                    emojiPicker.classList.remove('active');
+                }
+            });
+        });
+    </script>    
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nearby Restaurants</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-image: url("styles/ims/bg.jpg");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        h1 {
+            text-align: center;
+            color: #ffffff;
+        }
+        #restaurants {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        .restaurant {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 250px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+        .restaurant:hover {
+            transform: scale(1.05);
+        }
+        .restaurant .info {
+            padding: 15px;
+            text-align: center;
+        }
+        .restaurant .info h3 {
+            margin: 0 0 10px;
+            font-size: 1.2em;
+            color: #000000;
+        }
+        .restaurant .info p {
+            margin: 5px 0;
+            color: #000000;
+            font-size: 0.9em;
+        }
+        .restaurant .info button {
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #000000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        .restaurant .info button:hover {
+            background-color: #ffffff;
+            color: rgb(0, 0, 0);
+        }
+        #loading {
+            display: none;
+            text-align: center;
+            color: #ffffff;
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Nearby Restaurants</h1>
+    <div id="loading">Searching for nearby restaurants...</div>
+    <div id="restaurants"></div>
+
+    <script>
+        const apiKey = 'c503613083b94b5b94898b44a0e09694';
+
+        async function fetchRestaurants(lat, lon) {
+            const radius = 15000; 
+            const url = `https://api.geoapify.com/v2/places?categories=catering.restaurant&filter=circle:${lon},${lat},${radius}&limit=20&apiKey=${apiKey}`;
+            try {
+                showLoading(true);
+                const response = await fetch(url);
+                const data = await response.json();
+                displayResults(data.features);
+            } catch (error) {
+                console.error('Error fetching restaurants:', error);
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function displayResults(restaurants) {
+            const restaurantDiv = document.getElementById("restaurants");
+            restaurantDiv.innerHTML = "";
+
+            if (restaurants.length === 0) {
+                restaurantDiv.innerHTML = "<p>No restaurants found in the area.</p>";
+                return;
+            }
+            restaurants.forEach((restaurant) => {
+                const name = restaurant.properties.name || "Unnamed Restaurant";
+                const address = restaurant.properties.address_line1 || "Address not available";
+                const lat = restaurant.properties.lat;
+                const lon = restaurant.properties.lon;
+
+                const restaurantElement = document.createElement("div");
+                restaurantElement.className = "restaurant";
+                restaurantElement.innerHTML = `
+                    <div class="info">
+                        <h3>${name}</h3>
+                        <p>${address}</p>
+                        <button onclick="redirectToGoogleMaps(${lat}, ${lon})">View on Google Maps</button>
+                    </div>
+                `;
+                restaurantDiv.appendChild(restaurantElement);
+            });
+        }
+
+        function redirectToGoogleMaps(lat, lon) {
+            const url = `https://www.google.com/maps?q=${lat},${lon}`;
+            window.open(url, '_blank');
+        }
+
+        function getUserLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const userLat = position.coords.latitude;
+                        const userLon = position.coords.longitude;
+                        fetchRestaurants(userLat, userLon);
+                    },
+                    (error) => {
+                        console.error('Error getting location:', error);
+                        document.getElementById("restaurants").innerHTML = "<p>Unable to access your location. Please enable location services and reload the page.</p>";
+                    }
+                );
+            } else {
+                document.getElementById("restaurants").innerHTML = "<p>Geolocation is not supported by your browser.</p>";
+            }
+        }
+
+        function showLoading(isLoading) {
+            const loadingElement = document.getElementById("loading");
+            loadingElement.style.display = isLoading ? "block" : "none";
+        }
+
+        window.onload = getUserLocation;
+    </script>
+</body>
+</html>
